@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  laravel-api:
+    container_name: laravel-api
+    build: .
+    volumes:
+      - ./laravel-api:/var/www/html
+    ports:
+      - 9100:80
+    depends_on:
+      - mongo_db
+      - mysql_db
+      - redis_db
+
+  
+  mongo_db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27018:27017
+    environment:
+    - MONGO_INITDB_ROOT_USERNAME=admin
+    - MONGO_INITDB_ROOT_PASSWORD=secret
+    - MONGO_INITDB_DATABASE=laravel_docker
+
+  redis_db:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+
+  mysql_db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel_api
+      #MYSQL_DATABASE: laravel_docker
+    ports:
+      - 3308:3306
+  
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - 9101:80
+    environment:
+      - PMA_ARBITRARY=1
